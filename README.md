@@ -30,12 +30,40 @@ O fluxo usa quatro papéis — orquestrador, analista, especialista em protocolo
 
 A [simulação do ESP32 no Wokwi](https://wokwi.com/projects/480345789543663617) mostra os sensores e o firmware. O simulador pode ser usado em modo local. Para executar a análise e a conversa, inicie o backend e o Ollama conforme o guia abaixo.
 
+| Painel no Android | Circuito no Wokwi |
+| --- | --- |
+| <img src="docs/imagens/painel-android.jpg" alt="Painel do CardioIA no Android com 180 BPM, 26 °C e indicação de leitura fora do domínio do modelo" width="270"> | <img src="docs/imagens/simulacao-wokwi.jpg" alt="Circuito ESP32 em execução no Wokwi, com sensor DHT22, potenciômetro e leitura simulada de 84 BPM no OLED" width="480"> |
+| O painel mostra as medições simuladas, preserva o histórico e sinaliza quando o modelo não calcula uma previsão para a leitura. | O circuito simula temperatura e batimentos e indica, no visor e nos LEDs, se a leitura está na faixa do modelo. |
+
 | Cenário sintético | Resultado observado na entrega |
 | --- | --- |
 | 26 °C e 81 BPM | A API aceitou a medição, calculou a classe experimental e concluiu a análise no Ollama. |
 | 26 °C e 180 BPM | A API preservou a medição no histórico e informou `out_of_domain`, com classe e score nulos. |
 
 A suíte do backend da entrega acadêmica registrou **105 testes aprovados**, incluindo regressões da Fase 6. Também foram validados o fluxo HTTP com o modelo e o Ollama em execução, a interface Web publicada e o cliente em um aparelho Android. Os [exemplos JSON](docs/exemplos/) são fixtures sintéticas para entender os formatos da API.
+
+## Estrutura de arquivos
+
+```text
+cardioia-7-portfolio/
+├── Backend/
+│   ├── src/cardioia_api/  # API FastAPI, persistência e fila de análise
+│   ├── src/cardioia/      # Classificador, agentes e integração com Ollama
+│   ├── data/             # Dados sintéticos e instruções do assistente
+│   ├── models/           # Modelo treinado, metadados e manifesto
+│   ├── scripts/          # Configuração local e verificação da API
+│   └── tests/            # Testes do backend e dos componentes de IA
+├── IoT/                  # Firmware MicroPython e circuito do Wokwi
+├── Mobile/               # Aplicativo Android em React Native e Expo
+├── Web/                  # Painel web em React e Vite
+├── docs/
+│   ├── contrato-api.md   # Endpoints e formatos dos dados
+│   ├── contratos/        # Schemas JSON
+│   ├── exemplos/         # Exemplos sintéticos de entrada e saída
+│   └── imagens/          # Capturas do Android e do Wokwi
+├── .env.example          # Modelo de configuração local
+└── README.md
+```
 
 ## Executar
 
